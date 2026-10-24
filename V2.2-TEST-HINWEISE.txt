@@ -1,0 +1,7 @@
+KABOOM! V2.2 – Profil-Vorschau (Test 1)
+
+Enthalten: Anklickbare Spielerprofile in Online-Lobby und am Online-Spieltisch, zwölf gesperrte Achievement-Platzhalter, Celestial-Design.
+
+Noch NICHT enthalten: Firebase-Persistenz der Statistik, Freischaltung, Achievements-Bilder, geräteübergreifende Identität, Reconnect und übrige V2.2-Effekte. Diese Vorschau schreibt KEINE neuen Profil-/Statistikdaten in Firebase und verändert keine Spielregeln.
+
+Test: GitHub Pages auf separatem Test-Branch/Repository oder lokal über einen Webserver. Nicht über die stabile Version deployen. Bestehende Firebase-Regeln und anonyme Auth bleiben unverändert.
