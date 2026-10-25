@@ -1,0 +1,9 @@
+KABOOM V2.2 — ENTWICKLUNGSBUILD 1 (NICHT FINALES RELEASE)
+
+Enthalten: 9/10-Popup 3 Sekunden und funktionierender Verstanden-Button; Mondphasen im Online-Rundenlabel; pulsierender goldener Ring am aktiven Spieleravatar.
+
+Noch offen: persistente Statistiken und sichere serverseitige Verbuchung, 12 freischaltbare Erfolgskarten, Siegerbild, weitere Animationen und gemeinsame Online-Tests.
+
+Firebase-Regeln NICHT durch dieses Paket ersetzen. Bestehende Regeln vor Erweiterung sichern.
+
+Reconnect bleibt gestrichen.

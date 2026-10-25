@@ -1,0 +1,73 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>KABOOM! – Soundlabor</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#f7e5c3;background:radial-gradient(ellipse at 70% -20%,#234367 0,#0a1932 47%,#040a18 100%);padding:22px 16px 60px}.wrap{max-width:650px;margin:auto}h1{text-align:center;color:#f0c982;letter-spacing:.06em;font-family:Georgia,serif;font-size:clamp(25px,6vw,37px)}.sub{text-align:center;line-height:1.5;color:#b9c9df;margin-bottom:25px}.panel{border:1px solid #b99054;border-radius:18px;background:#0b1c38cf;padding:18px;box-shadow:0 0 40px #0006}.volume{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}input[type=range]{width:100%;accent-color:#d9b773}button{display:flex;width:100%;align-items:center;text-align:left;gap:13px;background:linear-gradient(130deg,#132b4c,#0b1930);border:1px solid #6c694f;border-radius:13px;padding:13px 12px;color:#f7e5c3;margin:9px 0;cursor:pointer;font-size:15px}button:active,button.playing{border-color:#72dfb3;background:#174536}button .emoji{font-size:27px;width:37px;text-align:center}button span:nth-child(2){flex:1}b{display:block}small{display:block;color:#adbed2;margin-top:3px;font-size:12px}.play{font-size:18px;color:#d8bb83}.foot{font-size:12px;line-height:1.5;color:#acbdd4;margin-top:16px}#status{color:#83dfbb;min-height:20px;text-align:center;font-size:13px}</style></head><body><div class="wrap"><h1>✦ KABOOM! SOUNDLABOR ✦</h1><p class="sub">Alle acht Sounds einzeln anhören – direkt auf deinem iPhone. Noch kein GitHub-Upload nötig.</p><div class="panel"><div class="volume"><label for="vol">🔊 Lautstärke</label><strong id="voltext">65 %</strong></div><input type="range" id="vol" min="0" max="100" step="5" value="65"><p id="status" aria-live="polite"></p><button type="button" data-kind="intro"><span class="emoji">🌙</span><span><b>Logo-Intro</b><small>Mystische Tonfolge beim Start</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="draw"><span class="emoji">🃏</span><span><b>Karte ziehen</b><small>Kurzer Ziehklang</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="discard"><span class="emoji">📥</span><span><b>Karte ablegen</b><small>Kurzer Ablageklang</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="peek"><span class="emoji">✨</span><span><b>Karte ansehen</b><small>Funkelnder Geheimnisklang</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="swap"><span class="emoji">🔄</span><span><b>Karten tauschen</b><small>Mystischer Tauschklang</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="penalty"><span class="emoji">⚠️</span><span><b>Strafkarte</b><small>Zwei tiefe Warntöne</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="kaboom"><span class="emoji">💥</span><span><b>KABOOM!</b><small>Tiefer Bass, Einschlag und Sternennachhall</small></span><span class="play">▶</span></button>
+<button type="button" data-kind="win"><span class="emoji">🏆</span><span><b>Runden-/Spielsieg</b><small>Kurze Erfolgsmelodie</small></span><span class="play">▶</span></button><p class="foot">Diese Vorschau nutzt dieselben Klangfunktionen wie die vorbereitete KABOOM! V2.0 BETA 3. Auf iPhones ist tiefer Bass über Kopfhörer oder einen Lautsprecher besser hörbar. Töne starten nach Antippen.</p></div></div><script>
+const settings={sound:true,volume:65};let ctx=null;
+ function tone(freq,duration=.14,type='sine',gain=.12,delay=0){
+   if(!settings.sound)return;
+   try{ctx??=new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume();
+   const o=ctx.createOscillator(),v=ctx.createGain(),now=ctx.currentTime+delay;
+   o.type=type;o.frequency.setValueAtTime(freq,now);v.gain.setValueAtTime(.0001,now);
+   v.gain.exponentialRampToValueAtTime(Math.max(.001,gain*settings.volume/100),now+.018);
+   v.gain.exponentialRampToValueAtTime(.0001,now+duration);
+   o.connect(v).connect(ctx.destination);o.start(now);o.stop(now+duration+.025)
+   }catch(e){console.warn('Sound nicht verfügbar',e)}
+ }
+ function sound(kind){
+   if(kind==='intro'){tone(110,1.15,'sine',.12);tone(165,.9,'triangle',.07,.22);tone(330,.72,'sine',.09,.45);tone(495,.78,'sine',.07,.78);tone(740,.85,'sine',.065,1.06);tone(990,1.0,'sine',.045,1.3)}
+   if(kind==='draw'){tone(250,.065,'triangle',.05);tone(380,.055,'triangle',.04,.045)}
+   if(kind==='discard'){tone(150,.085,'triangle',.1)}
+   if(kind==='peek'){tone(780,.32,'sine',.1);tone(1180,.38,'sine',.055,.1)}
+   if(kind==='swap'){tone(330,.24,'sine',.1);tone(550,.28,'sine',.09,.13)}
+   if(kind==='penalty'){tone(220,.19,'triangle',.12);tone(165,.24,'triangle',.1,.18)}
+   if(kind==='kaboom'){
+     // Cinematic KABOOM: deep sub-bass drop, magical impact, sparkling tail.
+     try{
+       if(!settings.sound)return;
+       ctx??=new (window.AudioContext||window.webkitAudioContext)();
+       if(ctx.state==='suspended')ctx.resume();
+       const t=ctx.currentTime+.015,vol=settings.volume/100;
+       function sweep(from,to,start,duration,level,type='sine'){
+         const osc=ctx.createOscillator(),amp=ctx.createGain();
+         osc.type=type;
+         osc.frequency.setValueAtTime(from,t+start);
+         osc.frequency.exponentialRampToValueAtTime(to,t+start+duration);
+         amp.gain.setValueAtTime(.0001,t+start);
+         amp.gain.exponentialRampToValueAtTime(Math.max(.0002,level*vol),t+start+.018);
+         amp.gain.exponentialRampToValueAtTime(.0001,t+start+duration);
+         osc.connect(amp).connect(ctx.destination);
+         osc.start(t+start);osc.stop(t+start+duration+.03)
+       }
+       // Low-end impact and falling bass, with a quieter upper layer for phone speakers.
+       sweep(125,42,0,.85,.32,'sine');
+       sweep(205,67,.015,.63,.12,'triangle');
+       sweep(480,95,.02,.3,.075,'sawtooth');
+       // A shimmering celestial afterglow.
+       [659,880,1175,1568].forEach((freq,i)=>{
+         const start=.34+i*.16;
+         sweep(freq,freq*.82,start,.75,.043,'sine');
+       });
+       // Soft airy impact, generated locally without external audio files.
+       const len=Math.floor(ctx.sampleRate*.34);
+       const buffer=ctx.createBuffer(1,len,ctx.sampleRate),samples=buffer.getChannelData(0);
+       for(let i=0;i<len;i++)samples[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+       const noise=ctx.createBufferSource(),filter=ctx.createBiquadFilter(),amp=ctx.createGain();
+       noise.buffer=buffer;filter.type='lowpass';filter.frequency.value=850;
+       amp.gain.setValueAtTime(.0001,t);
+       amp.gain.exponentialRampToValueAtTime(Math.max(.0002,.11*vol),t+.015);
+       amp.gain.exponentialRampToValueAtTime(.0001,t+.32);
+       noise.connect(filter).connect(amp).connect(ctx.destination);
+       noise.start(t);noise.stop(t+.34);
+     }catch(e){console.warn('KABOOM-Sound nicht verfügbar',e)}
+   }
+   if(kind==='win'){[440,550,660,880].forEach((n,i)=>tone(n,.34,'sine',.09,i*.17))}
+ }
+
+document.getElementById('vol').addEventListener('input',e=>{settings.volume=+e.target.value;document.getElementById('voltext').textContent=settings.volume+' %'});
+document.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('button').forEach(x=>x.classList.remove('playing'));b.classList.add('playing');document.getElementById('status').textContent='▶ '+b.querySelector('b').textContent;sound(b.dataset.kind);setTimeout(()=>b.classList.remove('playing'),2000)}));
+</script></body></html>

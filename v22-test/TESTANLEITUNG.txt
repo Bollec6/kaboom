@@ -1,0 +1,9 @@
+KABOOM! V2.2 – Statistik-Testbuild (nicht veröffentlichen)
+
+Neu: Statistiken und 12 Fortschrittsanzeigen, Match-ID + Transaktion für idempotente Speicherung. Nur vollständige Online-Partien mit 3 Runden zählen; Aufgabe zählt nicht.
+
+ACHTUNG: Neue Firebase-Regeln sind nötig, bevor Statistiken gespeichert werden. Regeln sind ein Vorschlag und nicht live geprüft. Spieler können eigene Statistiken manipulieren (Spark ohne Server); für Freundeskreis akzeptierter Kompromiss.
+
+Test: 2 Browser/Telefone, neuen Raum, drei Runden spielen, Profile prüfen, Seite neu laden und erneut prüfen, ob Partien nur einmal zählen. Nicht auf bestehender Live-Seite testen.
+
+Einschränkungen: Achievement Sternendieb zählt jeden erfolgreichen 11/12-Tausch; Mondmeister/Phönix/Comeback erst nach vollständiger Partie. Vorherige Partien werden nicht nachgetragen. Anonyme Authentifizierung bindet Profil an Gerät.
