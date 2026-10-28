@@ -863,7 +863,15 @@ body:has(#results.v22OfflineFinale.active){overflow:hidden!important}
 #game .v88DrawnSlot.v23HasDrawn{background:#07142a;}
 #game .v88DrawnSlot .card.face{display:block;width:100%;height:100%;min-width:0;min-height:0;aspect-ratio:2/3;border-radius:inherit;pointer-events:none;background-size:100% 100%;background-position:center;box-shadow:none;}
 </style>
-</head><body><div class="wrap">
+<style id="v23-online-moonverse-profile">
+#v22ProfileViewer .v23MoonverseProfile{display:grid;gap:8px;margin:12px 0;padding:13px;border:1px solid #d9b26a;border-radius:12px;background:linear-gradient(145deg,#142a4b,#061329);color:#f9d998;text-align:center}
+#v22ProfileViewer .v23MoonverseProfile strong{font:700 clamp(14px,3vw,18px) Georgia,serif}
+#v22ProfileViewer .v23MoonverseProfile small{font:12px system-ui,sans-serif;color:#ffe3b2}
+#v22ProfileViewer .v23MoonverseBar{height:11px;border:1px solid #c79e5c;border-radius:10px;background:#08152c;overflow:hidden}
+#v22ProfileViewer .v23MoonverseBar>div{height:100%;border-radius:10px;background:linear-gradient(90deg,#a66c27,#ffe5a0);transition:width .3s}
+#lobbyAvatar[role="button"],#lobbyName[role="button"]{cursor:pointer}
+#lobbyAvatar[role="button"]:focus-visible,#lobbyName[role="button"]:focus-visible{outline:2px solid #ffe5a0;outline-offset:3px}
+</style></head><body><div class="wrap">
 <section id="menu" class="screen active" aria-label="KABOOM! Hauptmenü">
 <div class="celestialMenu">
 <img class="menuArt" src="assets/startmenu.webp" alt="KABOOM! Celestial Gold Sternenhimmel mit goldenen Spielmenü-Schaltflächen">
@@ -1239,7 +1247,7 @@ function closeLegendaryReveal(){v22Reveal.hidden=true;v22Reveal.classList.remove
 v22Reveal.querySelector('button').onclick=closeLegendaryReveal;
 v22Reveal.addEventListener('click',e=>{if(e.target===v22Reveal)closeLegendaryReveal()});
 const profileViewer=document.createElement('div');profileViewer.id='v22ProfileViewer';profileViewer.hidden=true;
-profileViewer.innerHTML='<div class="v22ProfilePanel" role="dialog" aria-modal="true" aria-label="Spielerprofil"><button type="button" class="v22Close" aria-label="Schließen">✕</button><div class="v22ProfileHeader"></div><div class="v22ProfileStats"></div><h3>✦ Legendäre Erfolgskarten ✦</h3><div class="v22AchievementGrid"></div><p class="v22Disclaimer">V2.2-Legendary-Reveal-Test: Ergebnisse werden nach drei Runden gespeichert. Nur Partien mit dieser Testversion zählen. Ohne Kontoverknüpfung bleiben Daten an die anonyme Firebase-Anmeldung gebunden.</p></div>';
+profileViewer.innerHTML='<div class="v22ProfilePanel" role="dialog" aria-modal="true" aria-label="Spielerprofil"><button type="button" class="v22Close" aria-label="Schließen">✕</button><div class="v22ProfileHeader"></div><div class="v23MoonverseProfile"></div><div class="v22ProfileStats"></div><h3>✦ Legendäre Erfolgskarten ✦</h3><div class="v22AchievementGrid"></div><p class="v22Disclaimer">V2.2-Legendary-Reveal-Test: Ergebnisse werden nach drei Runden gespeichert. Nur Partien mit dieser Testversion zählen. Ohne Kontoverknüpfung bleiben Daten an die anonyme Firebase-Anmeldung gebunden.</p></div>';
 document.body.append(profileViewer);
 profileViewer.querySelector('.v22Close').onclick=()=>profileViewer.hidden=true;
 profileViewer.addEventListener('click',e=>{if(e.target===profileViewer)profileViewer.hidden=true});
@@ -1252,6 +1260,11 @@ async function openV22Profile(id,m){
  const head=profileViewer.querySelector('.v22ProfileHeader');head.replaceChildren();
  const portrait=document.createElement('img');portrait.src='assets/avatar-'+avatar+'.webp';portrait.alt='Avatar von '+name;
  const title=document.createElement('div');const h=document.createElement('h2');h.textContent=name;const caption=document.createElement('small');caption.textContent=id===uid?'Dein Celestial-Profil':'Celestial-Spielerprofil';title.append(h,caption);head.append(portrait,title);
+ const moonBox=profileViewer.querySelector('.v23MoonverseProfile');moonBox.replaceChildren();
+ const moonXp=Math.max(0,Number(saved?.stats?.moonverse?.xp)||0),moonLv=mvLevel(moonXp),moonRank=mvRanks[Math.min(mvRanks.length-1,Math.floor((moonLv-1)/5))],moonNext=mvThresholds[moonLv]??null,moonPrev=mvThresholds[moonLv-1]??0;
+ const moonLabel=document.createElement('strong');moonLabel.textContent='🌙 MOONVERSE · Level '+moonLv+' · '+moonRank;
+ const moonBar=document.createElement('div');moonBar.className='v23MoonverseBar';const moonFill=document.createElement('div');moonFill.style.width=(moonNext===null?100:Math.max(0,Math.min(100,100*(moonXp-moonPrev)/(moonNext-moonPrev))))+'%';moonBar.append(moonFill);
+ const moonCount=document.createElement('small');moonCount.textContent=moonXp.toLocaleString('de-DE')+' / '+(moonNext===null?'MAX':moonNext.toLocaleString('de-DE'))+' XP';moonBox.append(moonLabel,moonBar,moonCount);
  const stats=profileViewer.querySelector('.v22ProfileStats');stats.replaceChildren();
  const playerStats=saved?.stats||{};if(!saved?.stats){const info=document.createElement('p');info.className='v22StatsHint';info.textContent='Für diese Firebase-Anmeldung wurden noch keine Statistiken gefunden. Öffne das Spiel im selben Safari-Browser wie bei deinem letzten Test.';stats.after(info)}else{profileViewer.querySelector('.v22StatsHint')?.remove()}for(const [label,key] of [['Partien','games'],['Siege','wins'],['KABOOM!-Rufe','correctKaboom'],['Beste Runde','bestRound']]){const item=document.createElement('div');const val=document.createElement('strong');val.textContent=playerStats[key]??'—';const lab=document.createElement('span');lab.textContent=label;item.append(val,lab);stats.append(item)}
  const grid=profileViewer.querySelector('.v22AchievementGrid');grid.replaceChildren();
@@ -1265,6 +1278,8 @@ function drawProfile(){profile.name=safeName(profile.name);$('profileName').valu
 $('avatarGrid').replaceChildren(...avatars.map(a=>choice(a,'avatar',a,'avatarChoice')));$('colorGrid').replaceChildren(...colors.map(c=>choice('', 'color',c,'colorChoice')));}
 function choice(label,key,value,cls){const b=document.createElement('button');b.type='button';b.className=cls+(profile[key]===value?' selected':'');b.textContent=key==='avatar'?({lion:'Löwe',owl:'Eule',wolf:'Wolf',cat:'Katze',fox:'Fuchs',stag:'Hirsch',bear:'Bär',raven:'Rabe'}[value]):label;if(key==='avatar')b.style.backgroundImage='url(assets/avatar-'+value+'.webp)';b.setAttribute('aria-label',key+' '+(value||'keins'));if(key==='color')b.style.setProperty('--choice',value);b.onclick=()=>{profile[key]=value;drawProfile()};return b}
 function saveProfile(){profile.name=safeName($('profileName').value);localStorage.setItem('kaboom-profile',JSON.stringify(profile));drawProfile();if(uid)persistOwnProfile().catch(e=>message('Profil konnte nicht dauerhaft gespeichert werden: '+friendly(e)))}
+// Eigenes Profil bereits vor dem Erstellen eines Online-Raums antippbar.
+for(const el of [$('lobbyAvatar'),$('lobbyName')]){el.setAttribute('role','button');el.setAttribute('tabindex','0');el.setAttribute('aria-label','Mein Profil mit MOONVERSE-Level ansehen');el.addEventListener('click',async()=>{try{await signIn();await openV22Profile(uid,{name:profile.name,avatar:profile.avatar})}catch(e){message('Profil konnte nicht geöffnet werden: '+friendly(e))}});el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click()}})}
 $('editProfile').onclick=()=>{drawProfile();showScreen('profile')};$('profileSave').onclick=async()=>{saveProfile();showScreen('lobby');if(room&&uid){try{await update(ref(db,`rooms/${room}/members/${uid}`),{name:profile.name,avatar:profile.avatar,color:profile.color,accessory:''})}catch(e){message('Profil im Raum konnte nicht aktualisiert werden: '+e.message)}}};$('profileBack').onclick=()=>showScreen('lobby');
 function member(){return{name:profile.name,avatar:profile.avatar,color:profile.color,accessory:'',joinedAt:Date.now()}}
 async function signIn(){if(uid)return uid;const cred=await signInAnonymously(auth);uid=cred.user.uid;try{await loadOwnProfile()}catch(e){message('Profil-Synchronisierung: '+friendly(e))}return uid}
