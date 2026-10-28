@@ -5,20 +5,11 @@
 .xp-mask{top:13.3%;height:1.6%;background:#071326;border:1px solid #b58b4e;overflow:hidden;box-shadow:0 0 6px #000}
 .xp-fill{height:100%;width:0%;background:linear-gradient(90deg,#ae7935,#ffe09a);transition:width .5s ease}
 .xp-detail{position:absolute;left:10.6%;top:15.5%;font-size:clamp(7px,1.4vh,13px);color:#ffdfa1;text-shadow:0 1px 4px #000;pointer-events:none}
-
-/* MOONVERSE profile alignment fix – keep the original background art. */
-.profile-level{
- left:12.1%;top:9.7%;width:12.5%;height:2.4%;
- display:flex;align-items:center;white-space:nowrap;
- font-size:clamp(8px,1.55vh,14px);line-height:1;
- overflow:hidden;text-overflow:ellipsis;
-}
-.xp-mask{left:10.8%;top:13.25%;width:11.2%;height:1.45%}
-.xp-detail{
- left:10.8%;top:15.25%;width:12.5%;height:2%;
- display:flex;align-items:center;white-space:nowrap;
- font-size:clamp(7px,1.2vh,11px);line-height:1;
-}
+</style><style id="moonverse-clean-profile-layout">
+/* Original artwork has no pre-drawn star or XP bar. These are live Firebase elements. */
+.profile-level{left:10.7%;top:9.75%;font-size:clamp(9px,1.75vh,17px);line-height:1.15;white-space:nowrap;max-width:13.8%;overflow:hidden;text-overflow:ellipsis;color:#ffe1a0}
+.xp-mask{left:10.7%;top:12.25%;width:11.9%;height:1.25%;min-height:5px;background:#050c1d;border:1px solid #b99051;box-shadow:0 0 4px #000;overflow:hidden}
+.xp-detail{left:10.7%;top:14.05%;font-size:clamp(7px,1.15vh,12px);white-space:nowrap;color:#f8db9b}
 </style></head><body><main class="shell"><div class="stage" id="stage" aria-label="MOONVERSE Spieleauswahl">
 <div class="profile-name" id="playerName">Spieler</div><div class="profile-level" id="playerLevel"></div><div class="xp-mask" aria-hidden="true"><div class="xp-fill" id="xpFill"></div></div><div class="xp-detail" id="xpDetail">Verbinde …</div>
 <button class="hit" style="left:1.5%;top:2%;width:24%;height:14%" data-action="profile" aria-label="Spielerprofil"></button>
