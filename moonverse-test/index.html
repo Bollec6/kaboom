@@ -13,14 +13,29 @@
 </style><style id="moonverse-dynamic-avatar-v2">
 /* The approved background contains an EMPTY avatar frame: the image below is user-specific. */
 .profile-avatar-live{
- position:absolute;left:2.45%;top:4.1%;width:6.35%;height:11.3%;
- border-radius:50%;object-fit:cover;z-index:2;pointer-events:none;
+ position:absolute;left:3.05%;top:6.0%;width:5.25%;height:9.35%;
+ border-radius:50%;object-fit:contain;object-position:center center;z-index:2;pointer-events:none;clip-path:circle(49% at 50% 50%);
  box-shadow:0 0 9px #f2c57466;
 }
 .profile-name{left:15.9%;top:7.0%;width:10.5%;height:3.5%;font-size:clamp(9px,2.2vh,23px)}
 .profile-level{left:11.1%;top:11.2%;max-width:15.5%;font-size:clamp(8px,1.65vh,17px)}
 .xp-mask{left:11.1%;top:13.75%;width:13.6%;height:1.3%;min-height:4px}
 .xp-detail{left:11.1%;top:15.5%;font-size:clamp(7px,1.2vh,12px)}
+</style><style id="moonverse-achievements-gallery">
+.panel.achievements-panel{width:min(94vw,900px);max-width:94vw;max-height:88vh;padding:22px 20px}
+.mv-ach-intro{margin:4px 0 14px;color:#e4c88f;font:14px system-ui}
+.mv-ach-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:12px}
+.mv-ach-tabs button{font:600 12px system-ui;margin:0;padding:8px 11px}
+.mv-ach-tabs button[disabled]{opacity:.48;cursor:default}
+.mv-ach-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;text-align:center}
+.mv-ach-card{border:1px solid #ab834a;border-radius:11px;background:#09152d;padding:7px;min-width:0}
+.mv-ach-card img{display:block;width:100%;aspect-ratio:2/3;object-fit:contain;border-radius:5px}
+.mv-ach-card.locked img{filter:grayscale(.8) brightness(.55)}
+.mv-ach-card.unlocked{border-color:#ffe0a0;box-shadow:0 0 14px #dba94d66}
+.mv-ach-name{font:700 12px system-ui;color:#ffe0a0;margin:6px 0 3px}
+.mv-ach-progress{font:11px system-ui;color:#d0b987}
+.mv-ach-desc{font:11px/1.35 system-ui;color:#c6c9d3;margin:4px 0}
+@media(max-width:550px){.mv-ach-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.mv-ach-name{font-size:10px}.mv-ach-desc{font-size:9px}.mv-ach-progress{font-size:10px}}
 </style><style id="moonverse-embedded-game">
 .game-view{position:fixed;inset:0;z-index:30;background:#020916;display:none;flex-direction:column}
 .game-view.open{display:flex}
@@ -58,7 +73,7 @@ function closeKaboom(){
  // Firebase listener remains active while the frame is open.
 }
 $('returnMoonverse').addEventListener('click',closeKaboom);
-const future={constellation:'CONSTELLATION',lunar:'LUNAR DICE',orbit:'ORBIT',eclipse:'ECLIPSE'};document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',async()=>{const a=b.dataset.action;if(a==='kaboom'){openKaboom();return}if(a==='profile'){profile();return}if(future[a]){show(future[a],'🌙 Dieses Spiel ist noch in Entwicklung.<p>Demnächst im MOONVERSE!</p>');return}if(a==='stats'){show('📊 Statistiken','Die gemeinsamen MOONVERSE-Statistiken werden später angebunden.<p>Deine bisherigen KABOOM!-Statistiken bleiben im KABOOM!-Profil.</p>');return}if(a==='achievements'){show('🏆 Erfolge','Die bestehenden zwölf KABOOM!-Erfolge bleiben unverändert und sind weiterhin im KABOOM!-Profil sichtbar.');return}if(a==='settings'){show('⚙️ Einstellungen','MOONVERSE-Einstellungen folgen in einer späteren Version.');return}if(a==='invite'){const link=location.href.split('?')[0];if(navigator.share){try{await navigator.share({title:'MOONVERSE',url:link})}catch{}}else{show('👥 Freunde einladen','<p>Teile diese Adresse mit deinen Freunden:</p><p id="inviteLink" style="overflow-wrap:anywhere"></p>');$('inviteLink').textContent=link}}}));$('close').onclick=close;$('dialog').addEventListener('click',e=>{if(e.target===$('dialog'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});refresh();})();
+const future={constellation:'CONSTELLATION',lunar:'LUNAR DICE',orbit:'ORBIT',eclipse:'ECLIPSE'};document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',async()=>{const a=b.dataset.action;if(a==='kaboom'){openKaboom();return}if(a==='profile'){profile();return}if(future[a]){show(future[a],'🌙 Dieses Spiel ist noch in Entwicklung.<p>Demnächst im MOONVERSE!</p>');return}if(a==='stats'){show('📊 Statistiken','Die gemeinsamen MOONVERSE-Statistiken werden später angebunden.<p>Deine bisherigen KABOOM!-Statistiken bleiben im KABOOM!-Profil.</p>');return}if(a==='achievements'){window.openMoonverseAchievements?.();return}if(a==='settings'){show('⚙️ Einstellungen','MOONVERSE-Einstellungen folgen in einer späteren Version.');return}if(a==='invite'){const link=location.href.split('?')[0];if(navigator.share){try{await navigator.share({title:'MOONVERSE',url:link})}catch{}}else{show('👥 Freunde einladen','<p>Teile diese Adresse mit deinen Freunden:</p><p id="inviteLink" style="overflow-wrap:anywhere"></p>');$('inviteLink').textContent=link}}}));$('close').onclick=close;$('dialog').addEventListener('click',e=>{if(e.target===$('dialog'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});refresh();})();
 </script><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInAnonymously} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
@@ -98,4 +113,51 @@ try{
   unsubscribe=onValue(ref(db,'profiles/'+user.uid),snap=>paint(snap.val()||{}),e=>{console.error(e);error('Datenbankzugriff prüfen')});
  });
 }catch(e){console.error(e);error('Firebase konnte nicht geladen werden')}
+</script><script id="moonverse-achievements-collection">
+(()=>{
+'use strict';
+const catalog=[
+['Mondmeister','Gewinne eine Partie mit 0 Gesamtpunkten.'],
+['Sternendieb','Tausche erfolgreich mit einer 11 oder 12.'],
+['Lunar-Scout','Sieh dir 10 gegnerische Karten an.'],
+['KABOOM!-Legende','Rufe 25-mal korrekt KABOOM!.'],
+['Phönix der Nacht','Gewinne nach mindestens 15 Punkten Rückstand.'],
+['Sternenkönig','Gewinne 50 Partien.'],
+['Kartenleser','Sieh dir 50 gegnerische Karten an.'],
+['Geschickter Fuchs','Führe 25 erfolgreiche Blindtausche aus.'],
+['Rudelspieler','Spiele 100 Partien.'],
+['Comeback-König','Gewinne nach einer Runde mit mindestens 10 Punkten.'],
+['Nerven aus Stahl','Rufe 10-mal korrekt KABOOM! mit genau zwei Nullen.'],
+['Konstanz','Gewinne fünf Partien hintereinander.']];
+function progress(s){return [[s.moonMaster?1:0,1],[s.swaps||0,1],[s.opponentPeeks||0,10],[s.correctKaboom||0,25],[s.phoenix?1:0,1],[s.wins||0,50],[s.opponentPeeks||0,50],[s.swaps||0,25],[s.games||0,100],[s.comeback?1:0,1],[s.doubleZeroCalls||0,10],[s.winStreak||0,5]]}
+function render(){
+ const p=window.moonverseSharedProfile;
+ const stats=p?.stats||{};
+ const scores=progress(stats);
+ const count=scores.filter(([n,t])=>n>=t).length;
+ const panel=document.querySelector('#dialog .panel');panel.classList.add('achievements-panel');
+ document.getElementById('dialogTitle').textContent='🏆 MOONVERSE · Erfolge';
+ const body=document.getElementById('dialogBody');body.replaceChildren();
+ const intro=document.createElement('p');intro.className='mv-ach-intro';intro.textContent=p?'KABOOM! · '+count+' von 12 Erfolgen freigeschaltet':'Verbinde dein Profil …';body.append(intro);
+ const tabs=document.createElement('div');tabs.className='mv-ach-tabs';
+ for(const [i,name] of ['KABOOM!','CONSTELLATION','LUNAR DICE','ORBIT','ECLIPSE'].entries()){
+  const b=document.createElement('button');b.textContent=name+(i?' · Bald':'');b.disabled=i!==0;tabs.append(b);
+ }body.append(tabs);
+ const grid=document.createElement('div');grid.className='mv-ach-grid';
+ catalog.forEach(([name,desc],i)=>{
+  const [current,target]=scores[i];const unlocked=current>=target;
+  const card=document.createElement('article');card.className='mv-ach-card '+(unlocked?'unlocked':'locked');
+  const img=document.createElement('img');img.src='../v22-test/achievements/'+String(i+1).padStart(2,'0')+'.png';img.alt=name;img.loading='lazy';
+  img.onerror=()=>{img.style.display='none'};
+  const title=document.createElement('div');title.className='mv-ach-name';title.textContent=(unlocked?'✦ ':'🔒 ')+name;
+  const details=document.createElement('div');details.className='mv-ach-desc';details.textContent=desc;
+  const status=document.createElement('div');status.className='mv-ach-progress';status.textContent=Math.min(current,target)+' / '+target;
+  card.append(img,title,details,status);grid.append(card);
+ });body.append(grid);
+ document.getElementById('dialog').classList.add('open');
+}
+window.openMoonverseAchievements=render;
+const close=document.getElementById('close');close.addEventListener('click',()=>document.querySelector('#dialog .panel').classList.remove('achievements-panel'));
+const observer=new MutationObserver(()=>{const d=document.getElementById('dialog');if(!d.classList.contains('open'))document.querySelector('#dialog .panel').classList.remove('achievements-panel')});observer.observe(document.getElementById('dialog'),{attributes:true,attributeFilter:['class']});
+})();
 </script></body></html>
