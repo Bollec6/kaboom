@@ -43,6 +43,19 @@
 .game-nav button{border:1px solid #d6ae66;border-radius:10px;background:#152b4a;color:#ffe7b1;padding:8px 13px;font:700 13px system-ui}
 .game-view iframe{display:block;flex:1;min-height:0;width:100%;border:0;background:#030b20}
 @media(orientation:landscape) and (max-height:500px){.game-nav{height:34px;min-height:34px}.game-nav button{padding:4px 10px;font-size:11px}}
+</style><style id="moonverse-statistics-style">
+.panel.statistics-panel{width:min(94vw,900px);max-width:94vw;max-height:88vh;padding:22px 20px}
+.mv-stat-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 18px}
+.mv-stat-tabs button{font:600 12px system-ui;margin:0;padding:8px 11px;opacity:.7}
+.mv-stat-tabs button.active{opacity:1;background:linear-gradient(#ffe2a0,#b47a35);box-shadow:0 0 12px #f1c57655}
+.mv-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;text-align:center}
+.mv-stat-card{border:1px solid #a88047;border-radius:12px;background:linear-gradient(155deg,#152647,#071126);padding:16px 8px;min-width:0}
+.mv-stat-card strong{display:block;color:#ffe2a2;font:700 clamp(18px,3vw,32px)/1.2 system-ui;overflow-wrap:anywhere}
+.mv-stat-card span{display:block;color:#d3c5a8;font:12px/1.4 system-ui;margin-top:7px}
+.mv-stat-section{margin:18px 0 10px;color:#ffe2a2;font:700 17px system-ui;text-align:left}
+.mv-stat-note{font:13px/1.5 system-ui;color:#c6cbd6;margin:12px 0}
+.mv-stat-empty{border:1px solid #987747;border-radius:12px;padding:25px 12px;color:#ddcba6;font:15px/1.5 system-ui}
+@media(max-width:600px){.mv-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.mv-stat-card{padding:12px 6px}.mv-stat-card span{font-size:11px}}
 </style></head><body><main class="shell"><div class="stage" id="stage" aria-label="MOONVERSE Spieleauswahl">
 <img class="profile-avatar-live" id="playerAvatar" alt="Dein KABOOM!-Avatar" src="" hidden onerror="this.hidden=true">
 <div class="profile-name" id="playerName">Spieler</div><div class="profile-level" id="playerLevel"></div><div class="xp-mask" aria-hidden="true"><div class="xp-fill" id="xpFill"></div></div><div class="xp-detail" id="xpDetail">Verbinde …</div>
@@ -73,7 +86,7 @@ function closeKaboom(){
  // Firebase listener remains active while the frame is open.
 }
 $('returnMoonverse').addEventListener('click',closeKaboom);
-const future={constellation:'CONSTELLATION',lunar:'LUNAR DICE',orbit:'ORBIT',eclipse:'ECLIPSE'};document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',async()=>{const a=b.dataset.action;if(a==='kaboom'){openKaboom();return}if(a==='profile'){profile();return}if(future[a]){show(future[a],'🌙 Dieses Spiel ist noch in Entwicklung.<p>Demnächst im MOONVERSE!</p>');return}if(a==='stats'){show('📊 Statistiken','Die gemeinsamen MOONVERSE-Statistiken werden später angebunden.<p>Deine bisherigen KABOOM!-Statistiken bleiben im KABOOM!-Profil.</p>');return}if(a==='achievements'){window.openMoonverseAchievements?.();return}if(a==='settings'){show('⚙️ Einstellungen','MOONVERSE-Einstellungen folgen in einer späteren Version.');return}if(a==='invite'){const link=location.href.split('?')[0];if(navigator.share){try{await navigator.share({title:'MOONVERSE',url:link})}catch{}}else{show('👥 Freunde einladen','<p>Teile diese Adresse mit deinen Freunden:</p><p id="inviteLink" style="overflow-wrap:anywhere"></p>');$('inviteLink').textContent=link}}}));$('close').onclick=close;$('dialog').addEventListener('click',e=>{if(e.target===$('dialog'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});refresh();})();
+const future={constellation:'CONSTELLATION',lunar:'LUNAR DICE',orbit:'ORBIT',eclipse:'ECLIPSE'};document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',async()=>{const a=b.dataset.action;if(a==='kaboom'){openKaboom();return}if(a==='profile'){profile();return}if(future[a]){show(future[a],'🌙 Dieses Spiel ist noch in Entwicklung.<p>Demnächst im MOONVERSE!</p>');return}if(a==='stats'){window.openMoonverseStatistics?.();return}if(a==='achievements'){window.openMoonverseAchievements?.();return}if(a==='settings'){show('⚙️ Einstellungen','MOONVERSE-Einstellungen folgen in einer späteren Version.');return}if(a==='invite'){const link=location.href.split('?')[0];if(navigator.share){try{await navigator.share({title:'MOONVERSE',url:link})}catch{}}else{show('👥 Freunde einladen','<p>Teile diese Adresse mit deinen Freunden:</p><p id="inviteLink" style="overflow-wrap:anywhere"></p>');$('inviteLink').textContent=link}}}));$('close').onclick=close;$('dialog').addEventListener('click',e=>{if(e.target===$('dialog'))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});refresh();})();
 </script><script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
 import {getAuth,onAuthStateChanged,signInAnonymously} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
@@ -135,7 +148,7 @@ function render(){
  const stats=p?.stats||{};
  const scores=progress(stats);
  const count=scores.filter(([n,t])=>n>=t).length;
- const panel=document.querySelector('#dialog .panel');panel.classList.add('achievements-panel');
+ const panel=document.querySelector('#dialog .panel');panel.classList.remove('statistics-panel');panel.classList.add('achievements-panel');
  document.getElementById('dialogTitle').textContent='🏆 MOONVERSE · Erfolge';
  const body=document.getElementById('dialogBody');body.replaceChildren();
  const intro=document.createElement('p');intro.className='mv-ach-intro';intro.textContent=p?'KABOOM! · '+count+' von 12 Erfolgen freigeschaltet':'Verbinde dein Profil …';body.append(intro);
@@ -159,5 +172,27 @@ function render(){
 window.openMoonverseAchievements=render;
 const close=document.getElementById('close');close.addEventListener('click',()=>document.querySelector('#dialog .panel').classList.remove('achievements-panel'));
 const observer=new MutationObserver(()=>{const d=document.getElementById('dialog');if(!d.classList.contains('open'))document.querySelector('#dialog .panel').classList.remove('achievements-panel')});observer.observe(document.getElementById('dialog'),{attributes:true,attributeFilter:['class']});
+})();
+</script><script id="moonverse-statistics">
+(()=>{'use strict';
+const games=['KABOOM!','CONSTELLATION','LUNAR DICE','ORBIT','ECLIPSE'];
+const fmt=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('de-DE'):'—';
+const number=n=>Number.isFinite(Number(n))?Number(n):null;
+function card(grid,label,value){const el=document.createElement('div');el.className='mv-stat-card';const v=document.createElement('strong');v.textContent=value;const l=document.createElement('span');l.textContent=label;el.append(v,l);grid.append(el)}
+function section(root,title,entries){const h=document.createElement('h3');h.className='mv-stat-section';h.textContent=title;root.append(h);const grid=document.createElement('div');grid.className='mv-stat-grid';entries.forEach(([label,value])=>card(grid,label,value));root.append(grid)}
+function renderGame(index,root){root.replaceChildren();if(index!==0){const empty=document.createElement('div');empty.className='mv-stat-empty';empty.textContent='🌙 '+games[index]+' ist noch in Entwicklung. Hier erscheinen später deine persönlichen Spielstatistiken.';root.append(empty);return}
+const p=window.moonverseSharedProfile;const s=p?.stats;
+if(!s){const empty=document.createElement('div');empty.className='mv-stat-empty';empty.textContent='Deine KABOOM!-Statistiken werden geladen. Bitte prüfe, ob dein Profil verbunden ist.';root.append(empty);return}
+const gamesPlayed=number(s.games),wins=number(s.wins);
+const ratio=gamesPlayed>0&&wins!==null?(100*wins/gamesPlayed).toLocaleString('de-DE',{maximumFractionDigits:1})+' %':'—';
+section(root,'✦ KABOOM! · Gesamt',[['Gespielte Partien',fmt(s.games)],['Siege',fmt(s.wins)],['Siegquote',ratio],['Beste Runde',fmt(s.bestRound)],['Korrekte KABOOM!-Rufe',fmt(s.correctKaboom)],['Falsche KABOOM!-Rufe',fmt(s.falseKaboom)],['Gegnerische Karten angesehen',fmt(s.opponentPeeks)],['Kartentausche',fmt(s.swaps)],['KABOOM! mit zwei Nullen',fmt(s.doubleZeroCalls)],['Aktuelle Siegesserie',fmt(s.winStreak)]]);
+const online=s.online||{},offline=s.offline||{};
+section(root,'🌐 Online',[['Partien',fmt(online.games)],['Siege',fmt(online.wins)],['Siegquote',number(online.games)>0&&number(online.wins)!==null?(100*Number(online.wins)/Number(online.games)).toLocaleString('de-DE',{maximumFractionDigits:1})+' %':'—']]);
+section(root,'🤖 Offline',[['Partien',fmt(offline.games)],['Siege',fmt(offline.wins)],['Siegquote',number(offline.games)>0&&number(offline.wins)!==null?(100*Number(offline.wins)/Number(offline.games)).toLocaleString('de-DE',{maximumFractionDigits:1})+' %':'—'],['Mittel',fmt(offline.medium??offline.mittel)],['Schwer',fmt(offline.hard??offline.schwer)],['Legendär',fmt(offline.legendary??offline.legendaer)]]);
+const note=document.createElement('p');note.className='mv-stat-note';note.textContent='Alle Werte stammen aus deinem gespeicherten KABOOM!-Profil. „—“ bedeutet, dass für diese Kennzahl noch kein Wert gespeichert ist.';root.append(note)
+}
+function open(){const panel=document.querySelector('#dialog .panel');panel.classList.remove('achievements-panel');panel.classList.add('statistics-panel');document.getElementById('dialogTitle').textContent='📊 MOONVERSE · Statistiken';const body=document.getElementById('dialogBody');body.replaceChildren();const tabs=document.createElement('div');tabs.className='mv-stat-tabs';const content=document.createElement('div');games.forEach((game,i)=>{const b=document.createElement('button');b.type='button';b.textContent=game+(i?' · Bald':'');b.addEventListener('click',()=>{tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderGame(i,content)});if(i===0)b.classList.add('active');tabs.append(b)});body.append(tabs,content);renderGame(0,content);document.getElementById('dialog').classList.add('open')}
+window.openMoonverseStatistics=open;
+new MutationObserver(()=>{if(!document.getElementById('dialog').classList.contains('open'))document.querySelector('#dialog .panel').classList.remove('statistics-panel')}).observe(document.getElementById('dialog'),{attributes:true,attributeFilter:['class']});
 })();
 </script></body></html>
